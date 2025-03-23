@@ -64,28 +64,29 @@ export default function TextField() {
   };
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === " " && index < sentences.length) {
+    const handleKeyDown = (e: Event) => {
+      const keyboardEvent = e as unknown as KeyboardEvent;
+      if (keyboardEvent.key === " " && index < sentences.length) {
         setDisplayedSentences((prev) => [...prev, sentences[index]]);
-        setIndex((prevIndex) => prevIndex + 1); // Увеличиваем индекс
+        setIndex((prevIndex) => prevIndex + 1);
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown as any);
-    return () => window.removeEventListener("keydown", handleKeyDown as any);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [index, sentences]);
 
   useEffect(() => {
-    const handleTouchStart = (e: TouchEvent) => {
+    const handleTouchStart = (e: Event) => {
+      const touchEvent = e as unknown as TouchEvent;
       if (index < sentences.length) {
         setDisplayedSentences((prev) => [...prev, sentences[index]]);
-        setIndex((prevIndex) => prevIndex + 1); // Увеличиваем индекс
+        setIndex((prevIndex) => prevIndex + 1);
       }
     };
 
-    window.addEventListener("touchstart", handleTouchStart as any);
-    return () =>
-      window.removeEventListener("touchstart", handleTouchStart as any);
+    window.addEventListener("touchstart", handleTouchStart);
+    return () => window.removeEventListener("touchstart", handleTouchStart);
   }, [index, sentences]);
 
   useEffect(() => {
@@ -113,7 +114,7 @@ export default function TextField() {
     <div className="container mx-auto max-h-screen">
       <header className="flex justify-between items-center p-4 gap-4">
         <div className="flex gap-4 items-center">
-          <h1 className="hidden sm:block text-2xl uppercase font-bold">
+          <h1 className="text-xl sm:text-2xl uppercase font-bold">
             ADHD reader
           </h1>
         </div>
@@ -162,8 +163,14 @@ export default function TextField() {
           <ModeToggle />
         </div>
       </header>
-
-      <main className="max-h-screen mt-4 sm:mt-8">
+      {sentences.length === 0 ? (
+        <div className="flex justify-center items-center text-lg mt-8 p-4">
+          Нажмите на кнопку "Добавить текст", чтобы начать! ✨
+        </div>
+      ) : (
+        ""
+      )}
+      <main className="mt-4 sm:mt-8">
         <div className="container mx-auto flex justify-center">
           {sentences.length > 0 ? (
             <p className="hidden md:block opacity-80 font-light mb-4 sm:mb-8 p-4 text-center">
