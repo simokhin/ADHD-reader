@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { ModeToggle } from "./ModeToggle";
 
 export default function TextField() {
   // Сохраняем предложения в State, как массив
@@ -76,82 +77,91 @@ export default function TextField() {
 
   return (
     <div className="container mx-auto">
-      <header className="flex justify-center items-center p-4 gap-4">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button onKeyDown={handleButtonKeyDown}>Добавить текст</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Вставьте текст, который хотите прочесть</DialogTitle>
-              <DialogDescription>
-                Для наилучшего поведения приложения, добавленный текст не должен
-                содержать изображений и других визуальных элементов.
-              </DialogDescription>
-              <form onSubmit={handleSubmit}>
-                <Textarea
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  className="max-h-[300px] mb-2"
-                />
-                <Button
-                  type="submit"
-                  disabled={sentences.length > 0}
-                  onKeyDown={handleButtonKeyDown}
-                >
-                  Загрузить текст
-                </Button>
-              </form>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-        <p className="font-light">Добавьте текст ✨</p>
+      <header className="flex justify-between items-center p-4 gap-4">
+        <div className="flex gap-4 items-center">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button onKeyDown={handleButtonKeyDown}>Добавить текст</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  Вставьте текст, который хотите прочесть
+                </DialogTitle>
+                <DialogDescription>
+                  Для наилучшего поведения приложения, добавленный текст не
+                  должен содержать изображений и других визуальных элементов.
+                </DialogDescription>
+                <form onSubmit={handleSubmit}>
+                  <Textarea
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    className="max-h-[300px] mb-2"
+                  />
+                  <Button
+                    type="submit"
+                    disabled={sentences.length > 0}
+                    onKeyDown={handleButtonKeyDown}
+                  >
+                    Загрузить текст
+                  </Button>
+                </form>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+          <p className="font-light">Добавьте текст ✨</p>
+        </div>
+        <div>
+          <ModeToggle />
+        </div>
       </header>
 
-      <div className="container mx-auto flex justify-center">
-        {sentences.length > 0 ? (
-          <p className="opacity-80 font-light mb-8">
-            Нажмите <span>ПРОБЕЛ</span>, чтобы текст начал отображаться
-          </p>
-        ) : (
-          ""
-        )}
-      </div>
-
-      <div
-        className="max-w-prose mx-auto overflow-y-auto no-scrollbar p-4"
-        style={{ maxHeight: "400px", minHeight: "400px", overflowY: "auto" }}
-      >
-        {displayedSentences.map((sentence, index) => (
-          <p
-            key={index}
-            ref={
-              index === displayedSentences.length - 1 ? lastParagraphRef : null
-            }
-            className={`mb-2 px-2 py-2 transition-all ease-in-out ${
-              index === displayedSentences.length - 1
-                ? "bg-yellow-300 rounded-lg"
-                : ""
-            }`}
-          >
-            {sentence}
-          </p>
-        ))}
-      </div>
-
-      <div className="mt-8">
-        {sentences.length > 0 && (
-          <div className="text-center mb-4 max-w-[400px] mx-auto p-4 flex items-center justify-center gap-2">
-            {/* <p className="text-sm text-gray-600 mb-2">Прогресс: {progress}%</p> */}
-            <div className="h-2 w-full bg-gray-300 rounded-full">
-              <div
-                className="h-full bg-blue-500 rounded-full"
-                style={{ width: `${progress}%` }}
-              ></div>
+      <main className="max-h-screen mt-8">
+        <div className="container mx-auto flex justify-center">
+          {sentences.length > 0 ? (
+            <p className="opacity-80 font-light mb-8">
+              Нажмайте <span>ПРОБЕЛ</span>, чтобы текст начал отображаться
+            </p>
+          ) : (
+            ""
+          )}
+        </div>
+        <div
+          className="max-w-prose mx-auto overflow-y-auto no-scrollbar p-4"
+          style={{ maxHeight: "400px", minHeight: "400px", overflowY: "auto" }}
+        >
+          {displayedSentences.map((sentence, index) => (
+            <p
+              key={index}
+              ref={
+                index === displayedSentences.length - 1
+                  ? lastParagraphRef
+                  : null
+              }
+              className={`mb-2 px-2 py-2 transition-all ease-in-out ${
+                index === displayedSentences.length - 1
+                  ? "bg-yellow-300 rounded-lg"
+                  : ""
+              }`}
+            >
+              {sentence}
+            </p>
+          ))}
+        </div>
+        <div className="mt-8">
+          {sentences.length > 0 && (
+            <div className="text-center mb-4 max-w-[400px] mx-auto p-4 ">
+              <p className="text-sm text-gray-600 mb-2">{progress}%</p>
+              <div className="h-2 w-full bg-gray-300 rounded-full">
+                <div
+                  className="h-full bg-blue-500 rounded-full"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}{" "}
+        </div>
+      </main>
     </div>
   );
 }
