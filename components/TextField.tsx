@@ -65,8 +65,10 @@ export default function TextField() {
 
   useEffect(() => {
     const handleKeyDown = (e: Event) => {
-      const keyboardEvent = e as unknown as KeyboardEvent;
-      if (keyboardEvent.key === " " && index < sentences.length) {
+      if (
+        (e as unknown as KeyboardEvent).key === " " &&
+        index < sentences.length
+      ) {
         setDisplayedSentences((prev) => [...prev, sentences[index]]);
         setIndex((prevIndex) => prevIndex + 1);
       }
@@ -77,8 +79,8 @@ export default function TextField() {
   }, [index, sentences]);
 
   useEffect(() => {
-    const handleTouchStart = (e: Event) => {
-      const touchEvent = e as unknown as TouchEvent;
+    const handleTouchStart = () => {
+      // Тип Event можно не указывать, если не используется
       if (index < sentences.length) {
         setDisplayedSentences((prev) => [...prev, sentences[index]]);
         setIndex((prevIndex) => prevIndex + 1);
@@ -165,7 +167,7 @@ export default function TextField() {
       </header>
       {sentences.length === 0 ? (
         <div className="flex justify-center items-center text-lg mt-8 p-4">
-          Нажмите на кнопку "Добавить текст", чтобы начать! ✨
+          Нажмите на кнопку &quot;Добавить текст&quot;, чтобы начать! ✨
         </div>
       ) : (
         ""
