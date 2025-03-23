@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -30,6 +31,15 @@ export default function TextField() {
   const lastParagraphRef = useRef<HTMLParagraphElement | null>(null);
 
   const [progress, setProgress] = useState(0);
+
+  const handleClick = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setSentences([]);
+    setDisplayedSentences([]);
+    setIndex(0);
+    setProgress(0);
+  };
 
   // Обрабатываем нажатие на кнопку "Загрузить текст"
   const handleSubmit = (e: React.FormEvent) => {
@@ -61,8 +71,21 @@ export default function TextField() {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown as any);
+    return () => window.removeEventListener("keydown", handleKeyDown as any);
+  }, [index, sentences]);
+
+  useEffect(() => {
+    const handleTouchStart = (e: TouchEvent) => {
+      if (index < sentences.length) {
+        setDisplayedSentences((prev) => [...prev, sentences[index]]);
+        setIndex((prevIndex) => prevIndex + 1); // Увеличиваем индекс
+      }
+    };
+
+    window.addEventListener("touchstart", handleTouchStart as any);
+    return () =>
+      window.removeEventListener("touchstart", handleTouchStart as any);
   }, [index, sentences]);
 
   useEffect(() => {
@@ -87,10 +110,12 @@ export default function TextField() {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto max-h-screen">
       <header className="flex justify-between items-center p-4 gap-4">
         <div className="flex gap-4 items-center">
-          <h1 className="text-2xl uppercase font-bold">ADHD reader</h1>
+          <h1 className="hidden sm:block text-2xl uppercase font-bold">
+            ADHD reader
+          </h1>
         </div>
 
         <div className="flex gap-4 items-center justify-center">
@@ -113,13 +138,15 @@ export default function TextField() {
                     onChange={(e) => setInputValue(e.target.value)}
                     className="min-h-[250px] max-h-[250px] mb-4"
                   />
-                  <Button
-                    type="submit"
-                    onKeyDown={handleButtonKeyDown}
-                    className="hover:cursor-pointer hover:bg-accent-foreground transition-all ease-in-out duration-300 active:scale-110"
-                  >
-                    Загрузить текст
-                  </Button>
+                  <DialogClose asChild>
+                    <Button
+                      type="submit"
+                      onKeyDown={handleButtonKeyDown}
+                      className="hover:cursor-pointer hover:bg-accent-foreground transition-all ease-in-out duration-300 active:scale-110"
+                    >
+                      Загрузить текст
+                    </Button>
+                  </DialogClose>
                   {sentences.length > 0 ? (
                     <p className="mt-4 font-light inline-block pl-4">
                       Текст загружен ✨
@@ -136,11 +163,20 @@ export default function TextField() {
         </div>
       </header>
 
-      <main className="max-h-screen mt-8">
+      <main className="max-h-screen mt-4 sm:mt-8">
         <div className="container mx-auto flex justify-center">
           {sentences.length > 0 ? (
-            <p className="opacity-80 font-light mb-8">
-              Нажмайте <span>ПРОБЕЛ</span>, чтобы текст начал отображаться
+            <p className="hidden md:block opacity-80 font-light mb-4 sm:mb-8 p-4 text-center">
+              Нажмайте ПРОБЕЛ, чтобы текст начал отображаться
+            </p>
+          ) : (
+            ""
+          )}
+        </div>
+        <div className="container mx-auto flex justify-center">
+          {sentences.length > 0 ? (
+            <p className=" md:hidden opacity-80 font-light mb-4 sm:mb-8 p-4 text-center">
+              Нажмите на экран, чтобы текст начал отображаться
             </p>
           ) : (
             ""
@@ -168,7 +204,7 @@ export default function TextField() {
             </p>
           ))}
         </div>
-        <div className="mt-8">
+        <div className="mt-4 sm:mt-8">
           {sentences.length > 0 && (
             <div className="text-center mb-4 max-w-[400px] mx-auto p-4 ">
               <p className="text-sm opacity-50 mb-2">{progress}%</p>
@@ -178,6 +214,13 @@ export default function TextField() {
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
+              <Button
+                variant="secondary"
+                onClick={handleClick}
+                className="mt-4"
+              >
+                Сбросить текст
+              </Button>
             </div>
           )}{" "}
         </div>

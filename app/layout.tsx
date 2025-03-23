@@ -9,7 +9,7 @@ const font = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Read Text App",
+  title: "ADHD reader",
 };
 
 export default function RootLayout({
