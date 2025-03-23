@@ -3,6 +3,14 @@
 import { KeyboardEvent, useEffect, useState, useRef } from "react";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 export default function TextField() {
   // Сохраняем предложения в State, как массив
@@ -20,6 +28,8 @@ export default function TextField() {
   // Ссылка на последний добавленный абзац
   const lastParagraphRef = useRef<HTMLParagraphElement | null>(null);
 
+  const [progress, setProgress] = useState(0);
+
   // Обрабатываем нажатие на кнопку "Загрузить текст"
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +38,7 @@ export default function TextField() {
     setSentences(sentances);
     setDisplayedSentences([]); // Сброс отображенных предложений
     setIndex(0); // Сброс индекса
+    setProgress(0); // Сброс прогресса
   };
 
   useEffect(() => {
@@ -50,7 +61,12 @@ export default function TextField() {
         block: "nearest", // Прокручиваем к ближайшему элементу (в данном случае, последний)
       });
     }
-  }, [displayedSentences]); // Этот эффект сработает каждый раз, когда отображаются новые предложения
+
+    const newProgress = Math.round(
+      (displayedSentences.length / sentences.length) * 100
+    );
+    setProgress(newProgress);
+  }, [displayedSentences, sentences]); // Этот эффект сработает каждый раз, когда отображаются новые предложения
 
   const handleButtonKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === " ") {
@@ -60,19 +76,51 @@ export default function TextField() {
 
   return (
     <div className="container mx-auto">
-      <form onSubmit={handleSubmit}>
-        <Textarea
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          className="max-h-[100px]"
-        />
-        <Button type="submit" onKeyDown={handleButtonKeyDown}>
-          Загрузить текст
-        </Button>
-      </form>
+      <header className="flex justify-center items-center p-4 gap-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button onKeyDown={handleButtonKeyDown}>Добавить текст</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Вставьте текст, который хотите прочесть</DialogTitle>
+              <DialogDescription>
+                Для наилучшего поведения приложения, добавленный текст не должен
+                содержать изображений и других визуальных элементов.
+              </DialogDescription>
+              <form onSubmit={handleSubmit}>
+                <Textarea
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  className="max-h-[300px] mb-2"
+                />
+                <Button
+                  type="submit"
+                  disabled={sentences.length > 0}
+                  onKeyDown={handleButtonKeyDown}
+                >
+                  Загрузить текст
+                </Button>
+              </form>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+        <p className="font-light">Добавьте текст ✨</p>
+      </header>
+
+      <div className="container mx-auto flex justify-center">
+        {sentences.length > 0 ? (
+          <p className="opacity-80 font-light mb-8">
+            Нажмите <span>ПРОБЕЛ</span>, чтобы текст начал отображаться
+          </p>
+        ) : (
+          ""
+        )}
+      </div>
+
       <div
-        className="max-w-prose mx-auto overflow-y-auto no-scrollbar"
-        style={{ maxHeight: "300px", overflowY: "auto" }}
+        className="max-w-prose mx-auto overflow-y-auto no-scrollbar p-4"
+        style={{ maxHeight: "400px", minHeight: "400px", overflowY: "auto" }}
       >
         {displayedSentences.map((sentence, index) => (
           <p
@@ -80,7 +128,7 @@ export default function TextField() {
             ref={
               index === displayedSentences.length - 1 ? lastParagraphRef : null
             }
-            className={`mb-2 px-1 py-1 text-lg ${
+            className={`mb-2 px-2 py-2 transition-all ease-in-out ${
               index === displayedSentences.length - 1
                 ? "bg-yellow-300 rounded-lg"
                 : ""
@@ -89,6 +137,20 @@ export default function TextField() {
             {sentence}
           </p>
         ))}
+      </div>
+
+      <div className="mt-8">
+        {sentences.length > 0 && (
+          <div className="text-center mb-4 max-w-[400px] mx-auto p-4 flex items-center justify-center gap-2">
+            {/* <p className="text-sm text-gray-600 mb-2">Прогресс: {progress}%</p> */}
+            <div className="h-2 w-full bg-gray-300 rounded-full">
+              <div
+                className="h-full bg-blue-500 rounded-full"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
