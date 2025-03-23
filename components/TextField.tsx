@@ -35,7 +35,18 @@ export default function TextField() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const sentances = (inputValue ?? "").match(/[^.!?]+[.!?]*/g) || [];
+    const sentances =
+      (inputValue ?? "")
+        .trim()
+        .split(
+          /(?<!\b(?:g|t|i|e|et|dr|mr|ms|mrs|etc|e\.g|i\.e|a\.m|p\.m|vol|vs|jr|sr|prof|st|co|llc|gov)\.)(?<=\.|\!|\?)\s+/
+        ) || [];
+
+    if (!sentances[sentances.length - 1].endsWith(".") && inputValue.trim()) {
+      sentances[sentances.length - 1] += ".";
+    }
+
+    setInputValue("");
     setSentences(sentances);
     setDisplayedSentences([]); // Сброс отображенных предложений
     setIndex(0); // Сброс индекса
@@ -79,6 +90,10 @@ export default function TextField() {
     <div className="container mx-auto">
       <header className="flex justify-between items-center p-4 gap-4">
         <div className="flex gap-4 items-center">
+          <h1 className="text-2xl uppercase font-bold">ADHD reader</h1>
+        </div>
+
+        <div className="flex gap-4 items-center justify-center">
           <Dialog>
             <DialogTrigger asChild>
               <Button onKeyDown={handleButtonKeyDown}>Добавить текст</Button>
@@ -88,7 +103,7 @@ export default function TextField() {
                 <DialogTitle>
                   Вставьте текст, который хотите прочесть
                 </DialogTitle>
-                <DialogDescription>
+                <DialogDescription className="mb-2">
                   Для наилучшего поведения приложения, добавленный текст не
                   должен содержать изображений и других визуальных элементов.
                 </DialogDescription>
@@ -96,22 +111,27 @@ export default function TextField() {
                   <Textarea
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    className="max-h-[300px] mb-2"
+                    className="min-h-[250px] max-h-[250px] mb-4"
                   />
                   <Button
                     type="submit"
-                    disabled={sentences.length > 0}
                     onKeyDown={handleButtonKeyDown}
+                    className="hover:cursor-pointer hover:bg-accent-foreground transition-all ease-in-out duration-300 active:scale-110"
                   >
                     Загрузить текст
                   </Button>
+                  {sentences.length > 0 ? (
+                    <p className="mt-4 font-light inline-block pl-4">
+                      Текст загружен ✨
+                    </p>
+                  ) : (
+                    ""
+                  )}
                 </form>
               </DialogHeader>
             </DialogContent>
           </Dialog>
-          <p className="font-light">Добавьте текст ✨</p>
-        </div>
-        <div>
+          {/* <p className="font-light">Добавьте текст ✨</p> */}
           <ModeToggle />
         </div>
       </header>
@@ -128,7 +148,7 @@ export default function TextField() {
         </div>
         <div
           className="max-w-prose mx-auto overflow-y-auto no-scrollbar p-4"
-          style={{ maxHeight: "400px", minHeight: "400px", overflowY: "auto" }}
+          style={{ maxHeight: "300px", minHeight: "300px", overflowY: "auto" }}
         >
           {displayedSentences.map((sentence, index) => (
             <p
@@ -140,7 +160,7 @@ export default function TextField() {
               }
               className={`mb-2 px-2 py-2 transition-all ease-in-out ${
                 index === displayedSentences.length - 1
-                  ? "bg-yellow-300 rounded-lg"
+                  ? "bg-chart-4 rounded-lg"
                   : ""
               }`}
             >
@@ -151,10 +171,10 @@ export default function TextField() {
         <div className="mt-8">
           {sentences.length > 0 && (
             <div className="text-center mb-4 max-w-[400px] mx-auto p-4 ">
-              <p className="text-sm text-gray-600 mb-2">{progress}%</p>
+              <p className="text-sm opacity-50 mb-2">{progress}%</p>
               <div className="h-2 w-full bg-gray-300 rounded-full">
                 <div
-                  className="h-full bg-blue-500 rounded-full"
+                  className="h-full bg-chart-3 rounded-full"
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
