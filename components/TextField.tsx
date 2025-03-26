@@ -124,16 +124,14 @@ export default function TextField() {
         <div className="flex gap-4 items-center justify-center">
           <Dialog>
             <DialogTrigger asChild>
-              <Button onKeyDown={handleButtonKeyDown}>Добавить текст</Button>
+              <Button onKeyDown={handleButtonKeyDown}>Add text</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>
-                  Вставьте текст, который хотите прочесть
-                </DialogTitle>
+                <DialogTitle>Paste the text you want to read</DialogTitle>
                 <DialogDescription className="mb-2">
-                  Для наилучшего поведения приложения, добавленный текст не
-                  должен содержать изображений и других визуальных элементов.
+                  For the best application behavior, the added text should not
+                  contain images and other visual elements.
                 </DialogDescription>
                 <form onSubmit={handleSubmit}>
                   <Textarea
@@ -147,12 +145,12 @@ export default function TextField() {
                       onKeyDown={handleButtonKeyDown}
                       className="hover:cursor-pointer hover:bg-accent-foreground transition-all ease-in-out duration-300 active:scale-110"
                     >
-                      Загрузить текст
+                      Upload text
                     </Button>
                   </DialogClose>
                   {sentences.length > 0 ? (
                     <p className="mt-4 font-light inline-block pl-4">
-                      Текст загружен ✨
+                      Text uploaded ✨
                     </p>
                   ) : (
                     ""
@@ -167,7 +165,7 @@ export default function TextField() {
       </header>
       {sentences.length === 0 ? (
         <div className="flex justify-center items-center text-lg mt-8 p-4">
-          Нажмите на кнопку &quot;Добавить текст&quot;, чтобы начать! ✨
+          Click the "Add text" button to start! ✨
         </div>
       ) : (
         ""
@@ -176,7 +174,7 @@ export default function TextField() {
         <div className="container mx-auto flex justify-center">
           {sentences.length > 0 ? (
             <p className="hidden md:block opacity-80 font-light mb-4 sm:mb-8 p-4 text-center">
-              Нажмайте ПРОБЕЛ, чтобы текст начал отображаться
+              Press SPACE to start displaying the text
             </p>
           ) : (
             ""
@@ -185,7 +183,7 @@ export default function TextField() {
         <div className="container mx-auto flex justify-center">
           {sentences.length > 0 ? (
             <p className=" md:hidden opacity-80 font-light mb-4 sm:mb-8 p-4 text-center">
-              Нажмите на экран, чтобы текст начал отображаться
+              Tap the screen to start displaying the text
             </p>
           ) : (
             ""
@@ -223,12 +221,8 @@ export default function TextField() {
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
-              <Button
-                variant="secondary"
-                onClick={handleClick}
-                className="mt-4"
-              >
-                Сбросить текст
+              <Button variant="outline" onClick={handleClick} className="mt-4">
+                Reset text
               </Button>
             </div>
           )}{" "}
