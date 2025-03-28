@@ -5,6 +5,9 @@ import { ModeToggle } from "../components/ModeToggle";
 import Sentences from "@/components/Sentences";
 import Progress from "@/components/Progress";
 import AddTextButton from "@/components/AddTextButton";
+import { toast } from "sonner";
+import { splitSentences } from "@/utils/split-sentences";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   // Сохраняем предложения в State, как массив
@@ -37,24 +40,29 @@ export default function Home() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const sentances =
-      (inputValue ?? "")
-        .trim()
-        .split(
-          /(?<!\b(?:g|t|i|e|et|dr|mr|ms|mrs|etc|e\.g|i\.e|a\.m|p\.m|vol|vs|jr|sr|prof|st|co|llc|gov)\.)(?<=\.|\!|\?)\s+/
-        ) || [];
-
-    if (!sentances[sentances.length - 1].endsWith(".") && inputValue.trim()) {
-      sentances[sentances.length - 1] += ".";
+    if (!inputValue) {
+      toast("Empty field.");
+      return;
     }
 
+    const sentences = splitSentences(inputValue);
+
+    // if (
+    //   sentences.length > 0 &&
+    //   !sentences[sentences.length - 1].endsWith(".") &&
+    //   inputValue.trim()
+    // ) {
+    //   sentences[sentences.length - 1] += ".";
+    // }
+
     setInputValue("");
-    setSentences(sentances);
+    setSentences(sentences);
     setDisplayedSentences([]); // Сброс отображенных предложений
     setIndex(0); // Сброс индекса
     setProgress(0); // Сброс прогресса
   };
 
+  // Появление сообщени при нажатии на пробел
   useEffect(() => {
     const handleKeyDown = (e: Event) => {
       if (
@@ -70,19 +78,28 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [index, sentences]);
 
-  useEffect(() => {
-    const handleTouchStart = () => {
-      // Тип Event можно не указывать, если не используется
-      if (index < sentences.length) {
-        setDisplayedSentences((prev) => [...prev, sentences[index]]);
-        setIndex((prevIndex) => prevIndex + 1);
-      }
-    };
+  // Появление сообщений на тап по экрану
+  // useEffect(() => {
+  //   const handleTouchStart = () => {
+  //     // Тип Event можно не указывать, если не используется
+  //     if (index < sentences.length) {
+  //       setDisplayedSentences((prev) => [...prev, sentences[index]]);
+  //       setIndex((prevIndex) => prevIndex + 1);
+  //     }
+  //   };
 
-    window.addEventListener("touchstart", handleTouchStart);
-    return () => window.removeEventListener("touchstart", handleTouchStart);
-  }, [index, sentences]);
+  //   window.addEventListener("touchstart", handleTouchStart);
+  //   return () => window.removeEventListener("touchstart", handleTouchStart);
+  // }, [index, sentences]);
 
+  const handleTap = () => {
+    if (index < sentences.length) {
+      setDisplayedSentences((prev) => [...prev, sentences[index]]);
+      setIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  // Прокрутка
   useEffect(() => {
     // Прокручиваем к последнему абзацу, если он существует
     if (lastParagraphRef.current) {
@@ -105,7 +122,7 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto max-h-screen">
+    <div className="container mx-auto min-h-screen flex flex-col">
       <header className="flex justify-between items-center p-4 gap-4">
         <div className="flex gap-4 items-center">
           <h1 className="text-xl sm:text-2xl uppercase font-bold">
@@ -124,45 +141,46 @@ export default function Home() {
           <ModeToggle />
         </div>
       </header>
-      {sentences.length === 0 ? (
-        <div className="flex justify-center items-center text-lg mt-8 p-4">
-          Click the Add text button to start! ✨
+
+      {sentences.length === 0 && (
+        <div className="flex justify-center items-center text-lg font-bold mt-8 p-4 h-72">
+          Click the &#171;Add text&#187; button to start! ✨
         </div>
-      ) : (
-        ""
       )}
-      <main className="mt-4 sm:mt-8">
-        {/* Десктопная версия */}
+
+      <main className="mt-4 sm:mt-8 flex flex-col flex-grow">
         <div className="container mx-auto flex justify-center">
-          {sentences.length > 0 ? (
+          {sentences.length > 0 && (
             <p className="hidden md:block opacity-80 font-light mb-4 sm:mb-8 p-4 text-center">
               Press SPACE to start displaying the text
             </p>
-          ) : (
-            ""
           )}
         </div>
-        {/* Мобильная версия */}
+
         <div className="container mx-auto flex justify-center">
-          {sentences.length > 0 ? (
-            <p className=" md:hidden opacity-80 font-light mb-4 sm:mb-8 p-4 text-center">
+          {sentences.length > 0 && (
+            <p className="md:hidden opacity-80 font-light mb-4 sm:mb-8 p-4 text-center">
               Tap the screen to start displaying the text
             </p>
-          ) : (
-            ""
           )}
         </div>
-        {/* Отображение предложений */}
+
         <Sentences
           displayedSentences={displayedSentences}
           lastParagraphRef={lastParagraphRef}
         />
-        {/* Отображение прогресса */}
+
         <Progress
           sentences={sentences}
           progress={progress}
           handleClick={handleClick}
         />
+
+        <div className="flex justify-center sm:hidden mt-auto p-4">
+          <Button variant="secondary" className="px-16" onClick={handleTap}>
+            Next
+          </Button>
+        </div>
       </main>
     </div>
   );
