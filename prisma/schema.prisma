@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -17,6 +17,7 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  Notes Notes[]
 
   @@unique([email])
   @@map("user")
@@ -65,4 +66,16 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Notes {
+  id        Int   @id @default(autoincrement())
+  tag       String?
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("notes")
 }
