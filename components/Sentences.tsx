@@ -10,11 +10,29 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { addNote } from "@/app/actions";
+import { toast } from "sonner";
+import { useFormStatus } from "react-dom";
 
 interface SentencesProps {
   displayedSentences: string[];
-  lastParagraphRef: React.RefObject<HTMLParagraphElement | null>;
-  session: any;
+  lastParagraphRef: React.RefObject<HTMLDivElement>;
+  session: {
+    user: {
+      id: string;
+    };
+  } | null;
+}
+
+function Submit() {
+  const status = useFormStatus();
+
+  return (
+    <>
+      <Button disabled={status.pending} className="hover:cursor-pointer mt-4">
+        {status.pending ? "Saving..." : "Add note"}
+      </Button>
+    </>
+  );
 }
 
 export default function Sentences({
@@ -50,6 +68,13 @@ export default function Sentences({
             <DialogTrigger asChild>
               <Button
                 onKeyDown={handleButtonKeyDown}
+                onClick={(e) => {
+                  if (!session) {
+                    e.preventDefault(); // Prevent dialog from opening
+                    toast("To save a note, you need to log in.");
+                    return;
+                  }
+                }}
                 variant="ghost"
                 className="opacity-30 hover:cursor-pointer hover:opacity-100"
               >
@@ -79,9 +104,7 @@ export default function Sentences({
                     <Label>Tag (optional)</Label>
                     <Input type="text" name="tag" />
                   </div>
-                  <Button className="hover:cursor-pointer mt-4">
-                    Add note
-                  </Button>
+                  <Submit />
                 </form>
               </DialogHeader>
             </DialogContent>

@@ -15,9 +15,9 @@ import { authClient } from "@/lib/auth-client";
 export default function Home() {
   const {
     data: session,
-    isPending, //loading state
-    error, //error object
-    refetch, //refetch the session
+    // isPending, //loading state
+    // error, //error object
+    // refetch, //refetch the session
   } = authClient.useSession();
 
   // Сохраняем предложения в State, как массив
@@ -166,8 +166,13 @@ export default function Home() {
       </header>
 
       {sentences.length === 0 && (
-        <div className="flex justify-center items-center text-lg font-bold mt-8 p-4 h-72">
-          Click the &#171;Add text&#187; button to start! ✨
+        <div className="flex flex-col justify-center items-center text-lg gap-4 font-bold mt-8 p-4 h-72">
+          <p>Click the &#171;Add text&#187; button to start! ✨</p>
+          <Link href="/about">
+            <Button variant="secondary" className="hover:cursor-pointer">
+              What is all about
+            </Button>
+          </Link>
         </div>
       )}
 

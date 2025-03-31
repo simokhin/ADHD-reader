@@ -38,7 +38,7 @@ export default function Notes({ tags, notes }: NotesProps) {
   const filteredNotes = tag ? notes.filter((note) => note.tag === tag) : notes;
 
   return (
-    <div className="w-4xl mx-auto flex flex-col p-4 items-center mt-8">
+    <div className="w-full md:w-4xl mx-auto flex flex-col p-4 items-center mt-8">
       <h1 className="text-2xl uppercase font-bold mb-4">My notes</h1>
       <div className="max-w-prose flex gap-2 mb-4 flex-wrap justify-center">
         {tags?.map((tag) => (
@@ -51,7 +51,7 @@ export default function Notes({ tags, notes }: NotesProps) {
           </Button>
         ))}
       </div>
-
+      {filteredNotes.length === 0 ? "You haven't added any notes yet 😊" : ""}
       {filteredNotes.map((note) => (
         <div
           key={note.id}
