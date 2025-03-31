@@ -22,7 +22,7 @@ export default function Progress({
               style={{ width: `${progress}%` }}
             ></div>
           </div>
-          <Button variant="outline" onClick={handleClick} className="mt-4">
+          <Button variant="secondary" onClick={handleClick} className="mt-4">
             Reset text
           </Button>
         </div>

@@ -133,7 +133,7 @@ export default function Home() {
 
   return (
     <div className="container mx-auto min-h-screen flex flex-col">
-      <header className="flex justify-between items-center p-4 gap-4">
+      <header className="flex justify-between items-center p-4 gap-4 border-b-1 border-border">
         <div className="flex gap-4 items-center">
           <h1 className="text-xl sm:text-2xl uppercase font-bold">
             <Link href="/">ADHD reader</Link>
@@ -141,13 +141,6 @@ export default function Home() {
         </div>
 
         <div className="flex gap-4 items-center justify-center">
-          <AddTextButton
-            handleButtonKeyDown={handleButtonKeyDown}
-            handleSubmit={handleSubmit}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            sentences={sentences}
-          />
           <ModeToggle />
           {session ? (
             <Link href="/dashboard">
@@ -166,13 +159,22 @@ export default function Home() {
       </header>
 
       {sentences.length === 0 && (
-        <div className="flex flex-col justify-center items-center text-lg gap-4 font-bold mt-8 p-4 h-72">
+        <div className="flex flex-col justify-center items-center text-lg gap-4 font-medium mt-8 p-4 h-72">
           <p>Click the &#171;Add text&#187; button to start! ✨</p>
-          <Link href="/about">
-            <Button variant="secondary" className="hover:cursor-pointer">
-              What is all about
-            </Button>
-          </Link>
+          <div className="flex gap-4">
+            <AddTextButton
+              handleButtonKeyDown={handleButtonKeyDown}
+              handleSubmit={handleSubmit}
+              inputValue={inputValue}
+              setInputValue={setInputValue}
+              sentences={sentences}
+            />
+            <Link href="/about">
+              <Button variant="secondary" className="hover:cursor-pointer">
+                How it works
+              </Button>
+            </Link>
+          </div>
         </div>
       )}
 
@@ -205,8 +207,8 @@ export default function Home() {
           handleClick={handleClick}
         />
 
-        <div className="flex justify-center sm:hidden mt-auto p-4">
-          <Button variant="secondary" className="px-16" onClick={handleTap}>
+        <div className="flex justify-center sm:hidden mt-auto p-4 mb-24">
+          <Button className="px-16" onClick={handleTap}>
             Next
           </Button>
         </div>
