@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import Footer from "@/components/Footer";
 
 const font = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -28,7 +29,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="min-h-screen">{children}</div>
+          <Footer />
           <Toaster />
         </ThemeProvider>
       </body>
