@@ -43,3 +43,40 @@ export async function getNotes(userId: string) {
   }
   return notes;
 }
+
+export async function getTags(userId: string) {
+  let tags;
+  try {
+    tags = await prisma.notes.findMany({
+      where: { userId },
+      select: { tag: true },
+    });
+    tags = tags
+      .map((tag) => tag.tag)
+      .filter(
+        (tag, index, self) => tag !== null && self.indexOf(tag) === index
+      );
+    console.log(tags);
+  } catch (error) {
+    console.error("Error while getting tags", error);
+  }
+  return tags;
+}
+
+export async function deleteNote(id: string) {
+  const noteId = parseInt(id, 10);
+  if (isNaN(noteId)) {
+    throw new Error("Invalid note ID");
+  }
+  console.log(noteId);
+  try {
+    await prisma.notes.delete({
+      where: {
+        id: noteId,
+      },
+    });
+  } catch (error) {
+    console.error("Error while deleting note", error);
+  }
+  revalidatePath("/dashboard");
+}

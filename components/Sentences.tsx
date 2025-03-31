@@ -10,24 +10,18 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { addNote } from "@/app/actions";
-import { authClient } from "@/lib/auth-client";
 
 interface SentencesProps {
   displayedSentences: string[];
   lastParagraphRef: React.RefObject<HTMLParagraphElement | null>;
+  session: any;
 }
 
 export default function Sentences({
   displayedSentences,
   lastParagraphRef,
+  session,
 }: SentencesProps) {
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-    refetch, //refetch the session
-  } = authClient.useSession();
-
   const handleButtonKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === " ") {
       e.preventDefault(); // Запрещаем обработку пробела на кнопке

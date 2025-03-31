@@ -26,7 +26,13 @@ export default function AddTextButton({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button onKeyDown={handleButtonKeyDown}>Add text</Button>
+        <Button
+          variant="outline"
+          className="hover:cursor-pointer"
+          onKeyDown={handleButtonKeyDown}
+        >
+          Add text
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -17,8 +17,10 @@ import { Loader2 } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -64,10 +66,18 @@ export default function SignIn() {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full hover:cursor-pointer"
             disabled={loading}
             onClick={async () => {
-              await signIn.email({ email, password });
+              await signIn.email({
+                email,
+                password,
+                fetchOptions: {
+                  onSuccess: () => {
+                    router.push("/dashboard");
+                  },
+                },
+              });
               setLoading(true);
             }}
           >
@@ -87,6 +97,11 @@ export default function SignIn() {
                 await signIn.social({
                   provider: "discord",
                   callbackURL: "/dashboard",
+                  fetchOptions: {
+                    onSuccess: () => {
+                      router.push("/dashboard");
+                    },
+                  },
                 });
               }}
             >
@@ -109,6 +124,11 @@ export default function SignIn() {
                 await signIn.social({
                   provider: "github",
                   callbackURL: "/dashboard",
+                  fetchOptions: {
+                    onSuccess: () => {
+                      router.push("/dashboard");
+                    },
+                  },
                 });
               }}
             >
@@ -131,6 +151,11 @@ export default function SignIn() {
                 await signIn.social({
                   provider: "google",
                   callbackURL: "/dashboard",
+                  fetchOptions: {
+                    onSuccess: () => {
+                      router.push("/dashboard");
+                    },
+                  },
                 });
               }}
             >
@@ -165,6 +190,11 @@ export default function SignIn() {
                 await signIn.social({
                   provider: "twitter",
                   callbackURL: "/dashboard",
+                  fetchOptions: {
+                    onSuccess: () => {
+                      router.push("/dashboard");
+                    },
+                  },
                 });
               }}
             >

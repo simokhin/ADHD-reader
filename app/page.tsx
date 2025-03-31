@@ -8,8 +8,18 @@ import AddTextButton from "@/components/AddTextButton";
 import { toast } from "sonner";
 import { splitSentences } from "@/utils/split-sentences";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { LogIn, NotebookText } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export default function Home() {
+  const {
+    data: session,
+    isPending, //loading state
+    error, //error object
+    refetch, //refetch the session
+  } = authClient.useSession();
+
   // Сохраняем предложения в State, как массив
   const [sentences, setSentences] = useState<string[]>([]);
 
@@ -126,7 +136,7 @@ export default function Home() {
       <header className="flex justify-between items-center p-4 gap-4">
         <div className="flex gap-4 items-center">
           <h1 className="text-xl sm:text-2xl uppercase font-bold">
-            ADHD reader
+            <Link href="/">ADHD reader</Link>
           </h1>
         </div>
 
@@ -139,6 +149,19 @@ export default function Home() {
             sentences={sentences}
           />
           <ModeToggle />
+          {session ? (
+            <Link href="/dashboard">
+              <Button className="hover:cursor-pointer">
+                <NotebookText />
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/signin">
+              <Button className="hover:cursor-pointer">
+                <LogIn />
+              </Button>
+            </Link>
+          )}
         </div>
       </header>
 
@@ -168,6 +191,7 @@ export default function Home() {
         <Sentences
           displayedSentences={displayedSentences}
           lastParagraphRef={lastParagraphRef}
+          session={session}
         />
 
         <Progress

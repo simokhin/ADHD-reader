@@ -147,7 +147,7 @@ export function SignUp() {
           </div>
           <Button
             type="submit"
-            className="w-full"
+            className="w-full hover:cursor-pointer"
             disabled={loading}
             onClick={async () => {
               await signUp.email({
