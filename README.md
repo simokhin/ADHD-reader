@@ -36,7 +36,7 @@ My method is simple: the text is split into sentences and displayed one at a tim
    ```
 3. Install dependencies:
    ```bash
-   pnom install
+   pnpm install
    ```
 4. Start the development server:
    ```bash

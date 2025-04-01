@@ -21,7 +21,7 @@ export async function addNote(formData: FormData) {
       },
     });
   } catch (error) {
-    console.error("Error adding note:", error);
+    console.error("Error while adding note:", error);
     throw new Error("Failed to add note");
   }
   revalidatePath("/dashboard");

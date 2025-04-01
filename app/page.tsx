@@ -132,7 +132,7 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto min-h-screen flex flex-col">
+    <div className=" mx-auto min-h-screen flex flex-col">
       <header className="flex justify-between items-center p-4 gap-4 border-b-1 border-border">
         <div className="flex gap-4 items-center">
           <h1 className="text-xl sm:text-2xl uppercase font-bold">
