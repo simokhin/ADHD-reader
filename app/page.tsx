@@ -206,12 +206,13 @@ export default function Home() {
           progress={progress}
           handleClick={handleClick}
         />
-
-        <div className="flex justify-center sm:hidden mt-auto p-4 mb-24">
-          <Button className="px-16" onClick={handleTap}>
-            Next
-          </Button>
-        </div>
+        {sentences.length !== 0 && (
+          <div className="flex justify-center sm:hidden mt-auto p-4 mb-24">
+            <Button className="px-16" onClick={handleTap}>
+              Next
+            </Button>
+          </div>
+        )}
       </main>
     </div>
   );
